@@ -1,0 +1,194 @@
+<!-- Zmieniona wersja: Straż Miejska -->
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobilny Terminal Straży Miejskiej</title>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/2/2e/Herb_Polski.svg" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: #161b22;
+            padding: 30px 35px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid #30363d;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #8b949e;
+        }
+        .tab-buttons { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin:20px 0; }
+        button.tab-btn {
+            padding: 12px 22px; border:none; border-radius:10px; background:#21262d; color:#8b949e; cursor:pointer;
+        }
+        button.tab-btn.active { background:#ffcc00; color:#000; }
+        .tab { display:none; } .tab.active { display:block; }
+        form label { display:block; margin:10px 0 4px; font-weight:600; }
+        input, select, textarea {
+            width:100%; padding:10px; background:#21262d; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;
+        }
+        textarea { min-height:100px; }
+        button[type=submit], .send-btn {
+            margin-top:15px; padding:12px; width:100%; border:none; border-radius:10px;
+            background:#ffcc00; color:#000; font-weight:700; cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mobilny Terminal Straży Miejskiej</h1>
+        <h2>Summer RP</h2>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="showTab('mandat', event)">Wystaw Mandat</button>
+            <button class="tab-btn" onclick="showTab('raport', event)">Raport służbowy</button>
+            <button class="tab-btn" onclick="showTab('interwencja', event)">Raport z interwencji</button>
+        </div>
+
+        <!-- MANDAT -->
+        <div id="mandat" class="tab active">
+            <form class="enhanced-form">
+                <label>Imię i nazwisko ukaranego:</label>
+                <input type="text" placeholder="np. Jan Kowalski" />
+
+                <label>Nick (OOC):</label>
+                <input type="text" placeholder="np. Kowal#1234" />
+
+                <label>Data i godzina wystawienia:</label>
+                <input type="datetime-local" />
+
+                <label>Godzina zdarzenia:</label>
+                <input type="time" />
+
+                <label>Miejsce zdarzenia:</label>
+                <input type="text" placeholder="np. Gdańsk, ul. Długa" />
+
+                <label>Przyczyna nałożenia mandatu:</label>
+                <textarea placeholder="np. Nieprawidłowe parkowanie"></textarea>
+
+                <label>Kwota mandatu (PLN):</label>
+                <input type="number" placeholder="np. 300" />
+
+                <label>Funkcjonariusz (imię i stopień):</label>
+                <input type="text" placeholder="np. Strażnik Mł. Jan Nowak" />
+
+                <button type="submit">Wyślij mandat</button>
+            </form>
+        </div>
+
+        <!-- RAPORT SŁUŻBY -->
+        <div id="raport" class="tab">
+            <form class="enhanced-form">
+                <label>Data i godzina rozpoczęcia służby:</label>
+                <input type="datetime-local" />
+
+                <label>Data i godzina zakończenia służby:</label>
+                <input type="datetime-local" />
+
+                <label>Skład patrolu:</label>
+                <textarea placeholder="np. SM-12 Jan Nowak, SM-04 Anna Zielińska"></textarea>
+
+                <label>Rejon patrolowania:</label>
+                <input type="text" placeholder="np. Śródmieście" />
+
+                <label>Opis podjętych działań:</label>
+                <textarea placeholder="Opis wszystkich wykonanych czynności"></textarea>
+
+                <button type="submit">Wyślij raport służbowy</button>
+            </form>
+        </div>
+
+        <!-- INTERWENCJA -->
+        <div id="interwencja" class="tab">
+            <form>
+                <label>Data i godzina interwencji:</label>
+                <input type="datetime-local" />
+
+                <label>Miejsce zdarzenia:</label>
+                <input type="text" placeholder="np. Plac przy dworcu" />
+
+                <label>Opis interwencji:</label>
+                <textarea></textarea>
+
+                <label>Funkcjonariusze:</label>
+                <textarea></textarea>
+
+                <button type="submit">Wyślij interwencję</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showTab(id, e) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+        }
+            // Webhook handler
+        const WEBHOOK_MANDAT = "https://discord.com/api/webhooks/1403683432227410001/aSOQ2awWpU5bBgGsgo1E0k_kkBIGU6bwOUEBsuSXgaVc-vp3-cmAlIWk5wHSkkdLheNg"; // 🔗 Webhook mandatów
+        const WEBHOOK_RAPORT = "https://discord.com/api/webhooks/1438918196165087295/JtVFn3nAW-7NjCjfrMoQXvzFzCtTWl1IK0YePuXxMbnY8ZgCxZ6Dy2bmHPqY-vdxWECF"; // 🔗 Webhook raportów
+        const WEBHOOK_INTERWENCJA = "https://discord.com/api/webhooks/1438918196165087295/JtVFn3nAW-7NjCjfrMoQXvzFzCtTWl1IK0YePuXxMbnY8ZgCxZ6Dy2bmHPqY-vdxWECF"; // 🔗 Webhook interwencji // <- WSTAW SWÓJ WEBHOOK
+
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const data = {};
+                form.querySelectorAll('input, textarea, select').forEach(field => {
+                    data[field.previousElementSibling ? field.previousElementSibling.innerText.replace(/:$/,'') : field.name] = field.value;
+                });
+
+                let target = WEBHOOK_MANDAT;
+                if (form.parentElement.id === "raport") target = WEBHOOK_RAPORT;
+                if (form.parentElement.id === "interwencja") target = WEBHOOK_INTERWENCJA;
+
+                await fetch(target, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        embeds: [
+                            {
+                                title: form.parentElement.id === 'mandat' ? '📗 MANDAT – Straż Miejska' : form.parentElement.id === 'raport' ? '📘 RAPORT SŁUŻBOWY – Straż Miejska' : '📙 INTERWENCJA – Straż Miejska',
+                                color: 16763904,
+                                fields: Object.keys(data).map(key => ({
+                                    name: key,
+                                    value: data[key] || 'Brak',
+                                    inline: false
+                                })),
+                                footer: {
+                                    text: 'Straż Miejska – Summer RP'
+                                },
+                                timestamp: new Date().toISOString()
+                            }
+                        ]
+                    })
+                });
+
+                alert("Wysłano pomyślnie!");
+                form.reset();
+            });
+        });
+    </script>
+</body>
+</html>
